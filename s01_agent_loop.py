@@ -340,27 +340,24 @@ def _get_pending_tool_calls(state) -> list:
 
 
 # ─ 5. Agent 执行函数 ──────────────────────────────────────────────────────
-def run_agent(query: str, chat_history: list = None) -> str:
+def run_agent(query: str) -> str:
     """
     执行 Agent 并以流式方式输出响应，返回完整文本。
     支持 HumanInTheLoopMiddleware 中断恢复。
+    对话历史由 LangGraph checkpointer 通过 thread_id 自动管理。
 
     Args:
         query: 用户输入的问题
-        chat_history: 对话历史（可选）
 
     Returns:
         Agent 的最终文本响应
     """
-    messages = list(chat_history) if chat_history else []
-    messages.append({"role": "user", "content": query})
-
     if not hasattr(run_agent, "_thread_id"):
         run_agent._thread_id = str(uuid7())
     config = {"configurable": {"thread_id": run_agent._thread_id}}
 
     full_content = ""
-    inputs = {"messages": messages}
+    inputs = {"messages": [{"role": "user", "content": query}]}
 
     while True:
         # 流式输出
@@ -397,8 +394,6 @@ if __name__ == "__main__":
     print("s01: Agent Loop (LangChain Version)")
     print("输入问题，回车发送。输入 q 退出。\n")
     
-    chat_history = []
-    
     while True:
         try:
             query = input("\033[36ms01 >> \033[0m")
@@ -409,12 +404,8 @@ if __name__ == "__main__":
             break
         
         try:
-            # 执行 Agent（流式输出，run_agent 内部已打印）
-            response = run_agent(query, chat_history)
-
-            # 更新对话历史（使用字典格式）
-            chat_history.append({"role": "user", "content": query})
-            chat_history.append({"role": "assistant", "content": response})
+            # 执行 Agent（流式输出，checkpointer 通过 thread_id 自动管理对话历史）
+            run_agent(query)
 
             # 额外空行，让界面更清晰
             print()
