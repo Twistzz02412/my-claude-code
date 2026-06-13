@@ -82,6 +82,11 @@ python s01_agent_loop.py
 - langgraph >= 0.3.0
 - python-dotenv >= 1.0.0
 
+## 未来计划
+
+- **TodoListMiddleware**：将当前手动的 `todo_write` / `todo_read` 工具替换为 LangChain 内置的 `TodoListMiddleware`，实现更原生的任务状态追踪与持久化
+- **Subagent 支持**：增加子 Agent 功能，支持将复杂任务委派给专门的子 Agent 处理（如代码审查、测试生成、文档编写），实现多 Agent 协作架构
+
 ## 注意事项
 
 - Windows 环境下 Shell 命令使用 PowerShell 语法
