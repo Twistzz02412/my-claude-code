@@ -1,0 +1,7 @@
+# LangChain 核心依赖
+langchain>=1.3.4
+langchain-anthropic>=0.3.0
+langgraph>=0.3.0
+
+# 环境变量管理
+python-dotenv>=1.0.0
